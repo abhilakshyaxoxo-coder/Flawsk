@@ -3,165 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flawsk Play | Master Redirector</title>
+    <title>Flawsk Play | Infinite Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary: #ff3e3e;
-            --dark: #121212;
-            --gray: #1e1e1e;
+            --accent: #00d1ff; 
+            --bg: #050505;
+            --card-bg: #121212;
+            --text: #ffffff;
         }
+
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--dark);
-            color: white;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* --- HEADER --- */
+        header {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            padding: 20px;
+            padding: 15px 40px;
+            background: rgba(0, 0, 0, 0.95);
+            border-bottom: 1px solid #222;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
-        .container {
-            width: 100%;
-            max-width: 800px;
-            text-align: center;
-        }
-        .input-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        input {
-            flex: 1;
-            padding: 12px;
-            border-radius: 8px;
-            border: none;
-            background: var(--gray);
-            color: white;
-            font-size: 16px;
-        }
-        button {
-            padding: 12px 24px;
-            border-radius: 8px;
-            border: none;
-            background: var(--primary);
-            color: white;
-            font-weight: bold;
+
+        .logo-container img {
+            height: 45px;
+            width: auto;
             cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        /* --- GRID LAYOUT --- */
+        .container {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        /* --- MASCULINE CARD DESIGN --- */
+        .video-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
             transition: 0.3s;
+            cursor: pointer;
+            border: 1px solid #1a1a1a;
         }
-        button:hover {
-            background: #ff6666;
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 5px 15px rgba(0, 209, 255, 0.3);
         }
-        #flawsk-player-zone {
+
+        .thumbnail {
             width: 100%;
             aspect-ratio: 16/9;
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid var(--gray);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .platform-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 1px solid var(--accent);
         }
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+
+        .info { padding: 12px; }
+        .title { font-size: 14px; font-weight: 600; margin-bottom: 5px; color: #eee; }
+        .meta { font-size: 11px; color: var(--accent); text-transform: uppercase; }
+
+        /* --- PLAYER OVERLAY --- */
+        #player-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
         }
-        .platform-list {
-            margin-top: 15px;
-            font-size: 12px;
-            color: #888;
+
+        .close-player {
+            position: absolute;
+            top: 20px; right: 30px;
+            font-size: 35px; color: white;
+            cursor: pointer;
         }
+
+        #video-frame-container {
+            width: 90%;
+            max-width: 1000px;
+            aspect-ratio: 16/9;
+            background: #000;
+        }
+
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
 
+<header>
+    <div class="logo-container">
+        <img src="https://i.ibb.co/KcKJzCB/logo.png" alt="Flawsk Logo">
+    </div>
+    <div style="color: #666; font-size: 13px; font-weight: bold;">
+        TRENDING • TECH • REELS
+    </div>
+</header>
+
 <div class="container">
-    <h1>FLAWSK <span style="color:var(--primary)">PLAY</span></h1>
-    
-    <div class="input-box">
-        <input type="text" id="videoUrl" placeholder="Paste link (YouTube, TikTok, Odysee, DTU...)">
-        <button onclick="processFlawsk()">Flash Play</button>
-    </div>
+    <div class="video-grid" id="flawskGrid">
+        </div>
+</div>
 
-    <div id="flawsk-player-zone">
-        <p id="placeholder-text">Ready to Flash your video...</p>
-    </div>
-
-    <div class="platform-list">
-        Supported: YouTube • Dailymotion • Instagram • TikTok • Odysee (odc) • DTU • Vaibhav Sings
-    </div>
+<div id="player-overlay">
+    <div class="close-player" onclick="closeFlawsk()">&times;</div>
+    <div id="video-frame-container"></div>
 </div>
 
 <script>
-/**
- * FLAWSK MASTER JAVASCRIPT
- * Handles all redirects and embed logic
- */
-function processFlawsk() {
-    const url = document.getElementById('videoUrl').value.trim();
-    const playerZone = document.getElementById('flawsk-player-zone');
-    
-    if (!url) return alert("Please paste a URL first!");
+    const videos = [
+        { title: "Vaibhav Sings - Remainder Session", platform: "vaibhav", url: "https://vaibhav-sings.com/v/1", thumb: "https://picsum.photos/seed/v1/400/225", icon: "fa-microphone" },
+        { title: "Trending TikTok Clip", platform: "tiktok", url: "https://www.tiktok.com/@user/video/7123456789", thumb: "https://picsum.photos/seed/t2/400/225", icon: "fa-tiktok" },
+        { title: "YouTube Tech Roundup 2026", platform: "youtube", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", thumb: "https://picsum.photos/seed/y3/400/225", icon: "fa-youtube" },
+        { title: "Instagram Reel - Creative Arts", platform: "instagram", url: "https://www.instagram.com/reels/C_example/", thumb: "https://picsum.photos/seed/i4/400/225", icon: "fa-instagram" },
+        { title: "Odysee Decentralized Hub", platform: "odc", url: "https://odysee.com/$/embed/example", thumb: "https://picsum.photos/seed/o6/400/225", icon: "fa-rocket" }
+    ];
 
-    let embedSrc = "";
+    const grid = document.getElementById('flawskGrid');
 
-    // 1. YouTube Logic
-    if (url.includes("youtube.com") || url.includes("youtu.be")) {
-        const id = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
-        embedSrc = `https://www.youtube.com/embed/${id}?autoplay=1`;
-    } 
-    
-    // 2. Dailymotion Logic
-    else if (url.includes("dailymotion.com") || url.includes("dai.ly")) {
-        const id = url.split('/').pop().split('_')[0];
-        embedSrc = `https://www.dailymotion.com/embed/video/${id}`;
+    // FUNCTION TO CREATE CARDS
+    function createCards(data) {
+        data.forEach(vid => {
+            const card = document.createElement('div');
+            card.className = 'video-card';
+            card.onclick = () => openFlawsk(vid.url, vid.platform);
+            card.innerHTML = `
+                <div class="thumbnail" style="background-image: url('${vid.thumb}')">
+                    <div class="platform-icon"><i class="fa-brands ${vid.icon} || fa-solid ${vid.icon}"></i></div>
+                </div>
+                <div class="info">
+                    <div class="title">${vid.title}</div>
+                    <div class="meta">${vid.platform}</div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
     }
 
-    // 3. Instagram Reels/Video Logic
-    else if (url.includes("instagram.com")) {
-        const id = url.split('/reels/')[1]?.split('/')[0] || url.split('/p/')[1]?.split('/')[0];
-        embedSrc = `https://www.instagram.com/reels/${id}/embed`;
+    // INITIAL LOAD
+    createCards(videos);
+
+    // --- INFINITE SCROLL (DOOM SCROLLING) LOGIC ---
+    window.onscroll = function() {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+            // When user is near bottom, add more cards
+            createCards(videos);
+        }
+    };
+
+    // PLAYER LOGIC
+    function openFlawsk(url, platform) {
+        let embed = url;
+        if (platform === "youtube") {
+            const id = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
+            embed = `https://www.youtube.com/embed/${id}?autoplay=1`;
+        }
+        document.getElementById('video-frame-container').innerHTML = `<iframe src="${embed}" allowfullscreen allow="autoplay"></iframe>`;
+        document.getElementById('player-overlay').style.display = 'flex';
     }
 
-    // 4. TikTok Logic
-    else if (url.includes("tiktok.com")) {
-        const id = url.split('/video/')[1]?.split('?')[0];
-        embedSrc = `https://www.tiktok.com/embed/v2/${id}`;
+    function closeFlawsk() {
+        document.getElementById('player-overlay').style.display = 'none';
+        document.getElementById('video-frame-container').innerHTML = '';
     }
-
-    // 5. Odysee (odc) Logic
-    else if (url.includes("odysee.com")) {
-        const id = url.split('odysee.com/')[1];
-        embedSrc = `https://odysee.com/$/embed/${id}`;
-    }
-
-    // 6. DTU & Vaibhav Sings Logic (Remainder)
-    else if (url.includes("dtu") || url.includes("vaibhav")) {
-        // This assumes your custom DTU/Vaibhav server uses a standard player path
-        const id = url.split('/').pop();
-        embedSrc = `https://player.dtu.ac.in/embed/${id}`; 
-    }
-
-    // RENDER THE PLAYER
-    if (embedSrc) {
-        playerZone.innerHTML = `
-            <iframe 
-                src="${embedSrc}" 
-                allowfullscreen 
-                allow="autoplay; encrypted-media; picture-in-picture">
-            </iframe>`;
-    } else {
-        playerZone.innerHTML = `<p style="color:red">Platform not recognized by Flawsk.</p>`;
-    }
-}
-
-// Allow "Enter" key to trigger the play
-document.getElementById('videoUrl').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        processFlawsk();
-    }
-});
 </script>
 
 </body>
