@@ -3,48 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flawsk Play | Watch Trending YouTube Videos & Viral Content</title>
-    
-    <meta name="description" content="Flawsk Play is the premier destination for viral YouTube redirects. Optimized by Abhi Lakshya for the fastest video discovery experience.">
-    <meta name="author" content="Abhi Lakshya">
-    <link rel="canonical" href="https://yourdomain.com/">
-    
-    <meta property="og:title" content="Flawsk Play - Viral Video Hub">
-    <meta property="og:image" content="https://i.ibb.co/Z1f5fdbL/logo.png">
-    <meta property="og:type" content="website">
-
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>Flawsk Play | Master Redirector</title>
+    <style>
+        :root {
+            --primary: #ff3e3e;
+            --dark: #121212;
+            --gray: #1e1e1e;
+        }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--dark);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+        }
+        .input-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: var(--gray);
+            color: white;
+            font-size: 16px;
+        }
+        button {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #ff6666;
+        }
+        #flawsk-player-zone {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .platform-list {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo-container">
-            <img src="https://i.ibb.co/Z1f5fdbL/logo.png" alt="Flawsk Play Official Logo" class="header-logo">
-            <div class="logo-text">FLAWSK<span>PLAY</span></div>
-        </div>
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search viral trends...">
-        </div>
-    </header>
+<div class="container">
+    <h1>FLAWSK <span style="color:var(--primary)">PLAY</span></h1>
+    
+    <div class="input-box">
+        <input type="text" id="videoUrl" placeholder="Paste link (YouTube, TikTok, Odysee, DTU...)">
+        <button onclick="processFlawsk()">Flash Play</button>
+    </div>
 
-    <main>
-        <section class="hero-seo">
-            <h1>Trending <span>Video Portal</span></h1>
-            <p>Directly redirecting you to the world's most viral content in real-time.</p>
-        </section>
+    <div id="flawsk-player-zone">
+        <p id="placeholder-text">Ready to Flash your video...</p>
+    </div>
 
-        <div id="video-grid" class="video-grid">
-            </div>
-    </main>
+    <div class="platform-list">
+        Supported: YouTube • Dailymotion • Instagram • TikTok • Odysee (odc) • DTU • Vaibhav Sings
+    </div>
+</div>
 
-    <footer>
-        <div class="footer-wrap">
-            <p>&copy; 2026 <strong>Flawsk Play</strong>. All rights reserved.</p>
-            <p class="credit">Made by <span>Abhi Lakshya</span></p>
-        </div>
-    </footer>
+<script>
+/**
+ * FLAWSK MASTER JAVASCRIPT
+ * Handles all redirects and embed logic
+ */
+function processFlawsk() {
+    const url = document.getElementById('videoUrl').value.trim();
+    const playerZone = document.getElementById('flawsk-player-zone');
+    
+    if (!url) return alert("Please paste a URL first!");
 
-    <script src="script.js"></script>
+    let embedSrc = "";
+
+    // 1. YouTube Logic
+    if (url.includes("youtube.com") || url.includes("youtu.be")) {
+        const id = url.split('v=')[1]?.split('&')[0] || url.split('/').pop();
+        embedSrc = `https://www.youtube.com/embed/${id}?autoplay=1`;
+    } 
+    
+    // 2. Dailymotion Logic
+    else if (url.includes("dailymotion.com") || url.includes("dai.ly")) {
+        const id = url.split('/').pop().split('_')[0];
+        embedSrc = `https://www.dailymotion.com/embed/video/${id}`;
+    }
+
+    // 3. Instagram Reels/Video Logic
+    else if (url.includes("instagram.com")) {
+        const id = url.split('/reels/')[1]?.split('/')[0] || url.split('/p/')[1]?.split('/')[0];
+        embedSrc = `https://www.instagram.com/reels/${id}/embed`;
+    }
+
+    // 4. TikTok Logic
+    else if (url.includes("tiktok.com")) {
+        const id = url.split('/video/')[1]?.split('?')[0];
+        embedSrc = `https://www.tiktok.com/embed/v2/${id}`;
+    }
+
+    // 5. Odysee (odc) Logic
+    else if (url.includes("odysee.com")) {
+        const id = url.split('odysee.com/')[1];
+        embedSrc = `https://odysee.com/$/embed/${id}`;
+    }
+
+    // 6. DTU & Vaibhav Sings Logic (Remainder)
+    else if (url.includes("dtu") || url.includes("vaibhav")) {
+        // This assumes your custom DTU/Vaibhav server uses a standard player path
+        const id = url.split('/').pop();
+        embedSrc = `https://player.dtu.ac.in/embed/${id}`; 
+    }
+
+    // RENDER THE PLAYER
+    if (embedSrc) {
+        playerZone.innerHTML = `
+            <iframe 
+                src="${embedSrc}" 
+                allowfullscreen 
+                allow="autoplay; encrypted-media; picture-in-picture">
+            </iframe>`;
+    } else {
+        playerZone.innerHTML = `<p style="color:red">Platform not recognized by Flawsk.</p>`;
+    }
+}
+
+// Allow "Enter" key to trigger the play
+document.getElementById('videoUrl').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        processFlawsk();
+    }
+});
+</script>
+
 </body>
 </html>
